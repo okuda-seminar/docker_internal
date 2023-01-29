@@ -47,7 +47,7 @@
 *.pdb
 
 # Kernel Module Compile Results
-*.mod*
+#*.mod*
 *.cmd
 .tmp_versions/
 modules.order
@@ -65,8 +65,7 @@ dkms.conf
 
 # Compiled Dynamic libraries
 
-# Fortran module files
-*.mod
+# Fortran module files#
 *.smod
 
 # Compiled Static libraries
