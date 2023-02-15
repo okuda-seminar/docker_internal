@@ -1,8 +1,9 @@
-#include <gtest/gtest.h>
 #include <setjmp.h>
 #include <sys/socket.h>
 
-#include "../../src/nsexec.c"
+#include <gtest/gtest.h>
+
+#include "nsexec.h"
 
 #define STAGE_PARENT  0
 #define STAGE_CHILD   1

@@ -73,12 +73,8 @@ dkms.conf
 
 # Executables
 
-# Google Test output files
-CMakeFiles
-cmake_install.cmake
-CMakeCache.txt
-example_test
-tests/*/Makefile
+# Directories
+build
 
 ### Go ###
 # If you prefer the allow list template instead of the deny list, see community template:

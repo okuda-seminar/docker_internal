@@ -29,15 +29,22 @@ In the STAGE_CHILD case, the child process opens the sync_pipe for reading and c
 The EXPECT_GE and EXPECT_EQ macros are used to verify the results of the test and report failure if any of the expectations are not met. The exit function is used to exit the child process with a status of 0.
 
 ## How to test
+You can set up the environment by following steps.
 ```
 $ git clone https://github.com/nayuta-ai/docker_internal.git
 $ cd docker_internal
-$ git checkout nsexec/clone_parent
+$ git checkout nsexec
 $ make build
 $ make run
 $ make exec
-$ cd tests/C
-$ cmake .
+```
+
+You can test the nsexec script by following steps.
+```
+$ cd nsexec/test
+$ mkdir build
+$ cd build
+$ cmake ..
 $ make
-$ ./example_test
+$ ./nsexec_test
 ```
