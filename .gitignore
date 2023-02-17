@@ -74,7 +74,7 @@ dkms.conf
 # Executables
 
 # Directories
-build
+build/
 
 ### Go ###
 # If you prefer the allow list template instead of the deny list, see community template:

@@ -33,7 +33,8 @@ You can set up the environment by following steps.
 ```
 $ git clone https://github.com/nayuta-ai/docker_internal.git
 $ cd docker_internal
-$ git checkout nsexec
+$ git fetch
+$ git checkout nsexec/clone_parent
 $ make build
 $ make run
 $ make exec
