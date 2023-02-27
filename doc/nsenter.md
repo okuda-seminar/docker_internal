@@ -42,10 +42,11 @@ $ make exec
 
 You can test the nsexec script by following steps.
 ```
-$ cd nsexec/test
+$ cd nsexec
 $ mkdir build
 $ cd build
 $ cmake ..
 $ make
+$ cd test
 $ ./nsexec_test
 ```

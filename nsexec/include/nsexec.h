@@ -3,6 +3,8 @@
 
 #include <setjmp.h>
 
+#define CLONE_PARENT (1 << 24)
+
 /* Assume the stack grows down, so arguments should be above it. */
 struct clone_t
 {
@@ -18,19 +20,6 @@ struct clone_t
   int jmpval;
 };
 
-static int child_func(void *arg)
-{
-  struct clone_t *ca = (struct clone_t *)arg;
-  longjmp(*ca->env, ca->jmpval);
-}
-
-static int clone_parent(jmp_buf *env, int jmpval)
-{
-  struct clone_t ca = {
-      .env = env,
-      .jmpval = jmpval,
-  };
-  return clone(child_func, ca.stack_ptr, CLONE_PARENT | SIGCHLD, &ca);
-}
+int clone_parent(jmp_buf *env, int jmpval);
 
 #endif // NSEXEC_H

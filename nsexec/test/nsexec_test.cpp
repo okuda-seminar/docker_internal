@@ -3,7 +3,9 @@
 
 #include <gtest/gtest.h>
 
-#include "nsexec.h"
+extern "C" {
+  #include "nsexec.h"
+}
 
 #define STAGE_PARENT 0
 #define STAGE_CHILD 1
