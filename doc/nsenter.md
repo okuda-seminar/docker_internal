@@ -28,8 +28,8 @@ In the STAGE_CHILD case, the child process opens the sync_pipe for reading and c
 
 The EXPECT_GE and EXPECT_EQ macros are used to verify the results of the test and report failure if any of the expectations are not met. The exit function is used to exit the child process with a status of 0.
 
-## How to test
-You can set up the environment by following steps.
+### How to test
+Set up the environment by following steps.
 ```
 $ git clone https://github.com/nayuta-ai/docker_internal.git
 $ cd docker_internal
@@ -40,7 +40,7 @@ $ make run
 $ make exec
 ```
 
-You can test the nsexec script by following steps.
+Test the nsexec script by following steps.
 ```
 $ cd nsexec
 $ mkdir build
@@ -49,4 +49,48 @@ $ cmake ..
 $ make
 $ cd test
 $ ./nsexec_test
+```
+
+## How to use isolated namespace using nsexec
+### How to use nsenter using cgo
+The nsenter package registers a special init constructor that is called before the Go runtime has a chance to boot. This provides us the ability to setns on existing namespaces and avoid the issues that the Go runtime has with multiple threads. This constructor will be called if this package is registered, imported, in your go application.
+
+The nsenter package will import "C" and it uses cgo package. In cgo, if the import of "C" is immediately preceded by a comment, that comment, called the preamble, is used as a header when compiling the C parts of the package. So every time we import package nsenter, the C code function nsexec() would be called. And package nsenter is only imported in init.go, so every time the runc init command is invoked, that C code is run.
+
+Because nsexec() must be run before the Go runtime in order to use the Linux kernel namespace, you must import this library into a package if you plan to use libcontainer directly. Otherwise Go will not execute the nsexec() constructor, which means that the re-exec will not cause the namespaces to be joined. You can import it like this:
+```
+import _ "github.com/opencontainers/runc/libcontainer/nsenter"
+```
+
+### Test codes of nsexec function
+This time doesn't show the explanation of nsexec function because it is complicated to explain how to run nsexec. If anyone wants to know the overview of nsexec function, please see [nsexec.c](../nsexec/nsexec.c)
+
+`nsexec.go` is a Go file that includes a C code snippet using cgo. The purpose of this file is to include a C function nsexec() in the compiled Go binary.
+This file serves as a bridge between the Go and C languages, allowing the Go program to call C functions and interact with the operating system at a lower level.
+
+`nsexec_test.go` contains a Go test function that tests the functionality of the `nsenter-exec` command. The test function starts by creating a new socket pair for communicating with the `nsexec` function using the `newPipe` function:
+```
+parent, child := newPipe(t)
+```
+Next, the `cmd.Start()` function is called to execute the `nsenter-exec` command. This causes the program to jump to the `init()` function in `nsexec.go`, which in turn executes the `nsexec` function.
+Next, the `io.Copy(parent, bytes.NewReader(r.Serialize()))` pass config information to `nsexec` function and `initWaiter(t, parent)` is used to synchronize the parent and child processes by waiting for the child process to complete its initialization before continuing with the test.
+Next, `cmd.Wait()` is used to check whether the nsenter-exec command completed successfully or failed, and to report any errors that occurred during execution. If an error occurred, the test fails.
+Finally, `reapChildren(t, parent)` is used to reap child processes after the nsenter-exec command has completed.
+
+### How to test
+Set up the environment by following steps.
+```
+$ git clone https://github.com/nayuta-ai/docker_internal.git
+$ cd docker_internal
+$ git fetch
+$ git checkout nsexec/cgo
+$ make build
+$ make run
+$ make exec
+```
+
+Test the `nsenter_test.go` by following steps.
+```
+$ cd nsexec
+$ go test .
 ```
