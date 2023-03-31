@@ -38,7 +38,7 @@ func TestNsenterBasic(t *testing.T) {
 	r := nl.NewNetlinkRequest(int(libcontainer.InitMsg), 0)
 	r.AddData(&libcontainer.Int32msg{
 		Type:  libcontainer.CloneFlagsAttr,
-		Value: uint32(unix.CLONE_NEWNET),
+		Value: uint32(unix.CLONE_NEWUSER),
 	})
 
 	if _, err := io.Copy(parent, bytes.NewReader(r.Serialize())); err != nil {
@@ -109,7 +109,7 @@ func reapChildren(t *testing.T, parent *os.File) {
 	_, _ = unix.Wait4(pid.Pid2, nil, 0, nil)
 
 	// Sanity check.
-	if pid.Pid1 == 0 || pid.Pid2 == 0 && pid.Pid1 != pid.Pid2 {
+	if pid.Pid1 == 0 || pid.Pid2 == 0 || pid.Pid1 == pid.Pid2 {
 		t.Fatal("got pids:", pid)
 	}
 }
