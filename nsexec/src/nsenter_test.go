@@ -105,8 +105,8 @@ func reapChildren(t *testing.T, parent *os.File) {
 	}
 
 	// Reap children.
-	_, _ = unix.Wait4(pid.Pid1, nil, 0, nil)
-	_, _ = unix.Wait4(pid.Pid2, nil, 0, nil)
+	// _, _ = unix.Wait4(pid.Pid1, nil, 0, nil)
+	// _, _ = unix.Wait4(pid.Pid2, nil, 0, nil)
 
 	// Sanity check.
 	if pid.Pid1 == 0 || pid.Pid2 == 0 || pid.Pid1 == pid.Pid2 {
